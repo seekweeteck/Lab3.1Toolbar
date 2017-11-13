@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Lab 3.1 Toolbar</string>
+    <string name="hello">Hello World</string>
     <string name="action_settings">Settings</string>
     <string name="action_increase">Increase</string>
     <string name="action_decrease">Decrease</string>
+    <string name="about">About</string>
+    <string name="warning_max">Maximum font size reached</string>
+    <string name="warning_min">Minimum font size reached</string>
 </resources>

@@ -1,24 +1,24 @@
 package my.edu.tarc.lab31toolbar;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.Size;
-import android.util.TypedValue;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import static android.util.TypedValue.COMPLEX_UNIT_SP;
 
 public class MainActivity extends AppCompatActivity {
     private TextView textViewMessage;
-    private float size;
-    private float increment = 2;
+    private float size, max = 48, min = 12;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +26,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         textViewMessage = (TextView)findViewById(R.id.textViewMessage);
-        textViewMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-        size = 14;
+
+        //Determine font size in SP = font size in pixel (PX) / screen density
+        size = textViewMessage.getTextSize() / getScreenDensity();
+
         Log.d("Main", "Size " + size);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -40,6 +42,17 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+    }
+
+    public float getScreenDensity(){
+        float sizeDensity=0;
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        sizeDensity = metrics.density;
+
+        return sizeDensity;
     }
 
     @Override
@@ -60,13 +73,24 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }else if(id == R.id.action_increase){
-            size += increment;
+            if(size < max)
+                size += 1;
+            else
+                Toast.makeText(getApplicationContext(), getString(R.string.warning_max), Toast.LENGTH_SHORT).show();
+            textViewMessage.setText(getString(R.string.hello) + " in size " + size);
             textViewMessage.setTextSize(COMPLEX_UNIT_SP, size);
             return true;
         }else if(id == R.id.action_decrease){
-            size -= increment;
+            if(size > min)
+                size -= 1;
+            else
+                Toast.makeText(getApplicationContext(), getString(R.string.warning_min), Toast.LENGTH_SHORT).show();
+            textViewMessage.setText(getString(R.string.hello) + " in size " + size);
             textViewMessage.setTextSize(COMPLEX_UNIT_SP, size);
             return true;
+        }else if(id == R.id.action_about){
+            Intent intent = new Intent(this, AboutActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
